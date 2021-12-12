@@ -1,14 +1,18 @@
 import { createMuiTheme } from '@material-ui/core/styles';
-import orange from '@material-ui/core/colors/orange';
-import green from '@material-ui/core/colors/green';
 
+const arcBlue = "#0B72B9";
+const arcOrange = "#FFBA60";
 const theme = createMuiTheme({
     palette: {
+        common: {
+            orange: `${arcOrange}`,
+            blue: `${arcBlue}`
+        },
     primary: {
-      main: orange[500],
+      main: `${arcBlue}`,
     },
     secondary: {
-      main: green[500],
+      main: `${arcOrange}`,
     },
   },
 });
