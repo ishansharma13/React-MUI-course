@@ -4,9 +4,9 @@ function App() {
   return (
     <div className="App">
         <Header>
-          My Application
+        My Application
         </Header>
-      HELLO
+        Hello
     </div>
   );
 }
