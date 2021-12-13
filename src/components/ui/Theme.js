@@ -15,6 +15,20 @@ const theme = createMuiTheme({
       main: `${arcOrange}`,
     },
   },
+  typography:{
+    tab:{
+    fontFamily: 'Raleway',
+    textTransform: 'none',
+    fontWeight: '700',
+    fontSize: "1rem"
+    },
+    estimate: {
+      textTransform: 'none',
+      fontFamily: "Pacifico",
+      fontSize: "1em",
+      color: "white"
+    }
+  }
 });
 
 export default theme;
