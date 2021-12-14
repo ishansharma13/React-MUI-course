@@ -123,17 +123,17 @@ const styles = makeStyles(theme=>({
     }
 }))
 
-function Header(){
+function Header(props){
     
     const classes = styles();
-    const [value,setValue] = useState(0);
+    const {value,setValue,selectedIndex, setSelectedIndex} = props;
     const [anchorEl, setAnchorEl] = useState(null);
     const iOS = process.browser && /iPad|iPhone|iPod/.test(navigator.userAgent);
     const theme = useTheme();
     const matches = useMediaQuery(theme.breakpoints.down('md'));
     const [IsOpenDrawer,setIsOpenDrawer] = useState(false);
     const [IsOpen, setIsOpen] = useState(false);
-    const [selectedIndex, setSelectedIndex] = useState(0);
+    
     const MainOptions = [{displayName:"Home",link:"/",activeIndex:0},
   {displayName:"Services",link:"/services",activeIndex:1,ariaControls:anchorEl?"simple-menu":undefined,ariaPopup:IsOpen,mouseOver:event=>handleClick(event)},
   {displayName:"The Revolution",link:"/revolution",activeIndex:2},
@@ -184,7 +184,7 @@ function Header(){
       if(value === index){
         finalClasses.push(classes.drawerItemSelected);
       }
-      return finalClasses.length>0?finalClasses:null;
+      return finalClasses.length>0?finalClasses.join(' '):null;
     };
 
     const tabs = (<Fragment>
@@ -206,9 +206,10 @@ function Header(){
         classes={{paper: classes.menu}}
         MenuListProps={{onMouseLeave: handleClose}}
         elevation={0}
+        style={{zIndex: 1302}}
       > 
         {options.map((option,index)=>(
-          <MenuItem classes={{root: classes.menuItem}} selected={index===selectedIndex && value===1} onClick={(event)=>{handleSelectedItemClick(event,index); handleClose();setValue(1);}} component={Link} to={option.link}>{option.displayName}</MenuItem>
+          <MenuItem key={option.displayName} classes={{root: classes.menuItem}} selected={index===selectedIndex && value===1} onClick={(event)=>{handleSelectedItemClick(event,index); handleClose();setValue(1);}} component={Link} to={option.link}>{option.displayName}</MenuItem>
         ))};
         
         
