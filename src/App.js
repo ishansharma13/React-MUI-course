@@ -19,6 +19,9 @@ function App() {
         <Route exact path="/about-us" component={()=><div>About Us</div>} />
         <Route exact path="/contact-us" component={()=><div>Contact Us</div>} />
         <Route exact path="/estimate" component={()=><div>Estimate</div>} />
+        <Route exact path="/swdev" component={()=><div>swdev</div>} />
+        <Route exact path="/mobileapps" component={()=><div>mobileapps</div>} />
+        <Route exact path="/webdev" component={()=><div>webdev</div>} />
         
         </Switch>
         </BrowserRouter>
