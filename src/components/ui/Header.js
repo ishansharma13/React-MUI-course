@@ -12,9 +12,13 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import { useTheme } from '@material-ui/styles';
 import { useMediaQuery } from '@material-ui/core';
+import { IconButton } from '@material-ui/core';
+import MenuIcon from "@material-ui/icons/Menu";
+import { SwipeableDrawer } from '@material-ui/core';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
 
-
-const options = [{displayName:"Services",link:"/services"},{displayName:"Software Development",link:"/swdev"},{displayName:"Web Development",link:"/webdev"},{displayName:"Mobile Development",link:"/mobileapps"}]
 
 function ElevationScroll(props) {
     const { children } = props;
@@ -83,17 +87,60 @@ const styles = makeStyles(theme=>({
       "&:hover":{
         opacity:1
       }
+    },
+    drawerContainer:{
+      marginLeft:'auto',
+      "&:hover":{
+        backgroundColor:"transparent"
+      }
+    },
+    drawerIcon:{
+      height:'40px',
+      width:'40px',
+      color: 'white'
+      
+    },
+    drawerList:{
+      backgroundColor: theme.palette.common.blue,
+      
+    },
+    drawerListItem:{
+      ...theme.typography.tab,
+      color:'white',
+      opacity: 0.7,
+      "&:hover":{
+        opacity:1
+      }
+    },
+    drawerEstimate:{
+      backgroundColor: theme.palette.common.orange,
+    },
+    drawerItemSelected:{
+      opacity:1
+    },
+    appbar:{
+      zIndex: theme.zIndex.drawer+1
     }
 }))
 
 function Header(){
+    
     const classes = styles();
     const [value,setValue] = useState(0);
     const [anchorEl, setAnchorEl] = useState(null);
+    const iOS = process.browser && /iPad|iPhone|iPod/.test(navigator.userAgent);
     const theme = useTheme();
     const matches = useMediaQuery(theme.breakpoints.down('md'));
+    const [IsOpenDrawer,setIsOpenDrawer] = useState(false);
     const [IsOpen, setIsOpen] = useState(false);
     const [selectedIndex, setSelectedIndex] = useState(0);
+    const MainOptions = [{displayName:"Home",link:"/",activeIndex:0},
+  {displayName:"Services",link:"/services",activeIndex:1,ariaControls:anchorEl?"simple-menu":undefined,ariaPopup:IsOpen,mouseOver:event=>handleClick(event)},
+  {displayName:"The Revolution",link:"/revolution",activeIndex:2},
+  {displayName:"About Us",link:"/about-us",activeIndex:3},
+  {displayName:"Contact Us",link:"/contact-us",activeIndex:4},
+  {displayName:"Estimate",link:"/estimate",activeIndex:5}]
+    const options = [{displayName:"Services",link:"/services",activeIndex:1,selectedIndex:0},{displayName:"Software Development",link:"/swdev",activeIndex:1,selectedIndex:1},{displayName:"Web Development",link:"/webdev",activeIndex:1,selectedIndex:2},{displayName:"Mobile Development",link:"/mobileapps",activeIndex:1,selectedIndex:3}]  
     const handleChange = (e,v)=>{
       setValue(v);
     }
@@ -112,76 +159,41 @@ function Header(){
       setIsOpen(false);
     };
 
-
-
-
-
-
     useEffect(()=>{
-      switch(window.location.pathname){
-        case "/":
-          if (value!==0){
-            setValue(0);
-          }
-          break;
-        case "/services":
-          if (value!==1){
-            setValue(1);
-            setSelectedIndex(0);
-          }
-          break;
-        case "revolution":
-          if (value!==2){
-            setValue(2);
-          }
-          break;
-        case "/about-us":
-          if (value!==3){
-            setValue(3);
-          }
-          break;
-        case "/contact-us":
-          if (value!==4){
-            setValue(4);
-          }
-          break;
-        case "/estimate":
-          if (value!==5){
-            setValue(5);
-          }
-          break;
-        case "/swdev":
-          if (value!==1){
-            setValue(1);
-            setSelectedIndex(1);
-          }
-          break;
-        case "/webdev":
-          if (value!==1){
-            setValue(1);
-            setSelectedIndex(2);
-          }
-          break;
-        case "/mobileapps":
-          if (value!==1){
-            setValue(1);
-            setSelectedIndex(3);
-          }
-          break;
-        default:
-          break;
+      [...options,...MainOptions].forEach(route=>{
+        switch(window.location.pathname){
+          case `${route.link}`:
+            if(value!==route.activeIndex){
+            setValue(route.activeIndex);
+            if(route.selectedIndex && route.selectedIndex !== selectedIndex){
+              setSelectedIndex(route.selectedIndex);
+            }
+            }
+            break;
+          default:
+            break; 
+        }
+      });
+    },[value,selectedIndex,options,MainOptions] )
+
+    const getClass=(name,index)=>{
+      let finalClasses = [];
+      if (name.toLowerCase() === "estimate"){
+        finalClasses.push(classes.drawerEstimate);
       }
-      
-    },[value] )
+      if(value === index){
+        finalClasses.push(classes.drawerItemSelected);
+      }
+      return finalClasses.length>0?finalClasses:null;
+    };
 
     const tabs = (<Fragment>
               <Tabs value={value} onChange={handleChange} className={classes.toolbarContainer}>
-          <Tab className={classes.tab} component={Link} to="/" label="Home"/>
-          <Tab aria-controls={anchorEl?"simple-menu":undefined} aria-haspopup={IsOpen} className={classes.tab} component={Link} to="/services" onMouseOver={event=>handleClick(event)}  label="Services"/>
-          <Tab className={classes.tab} component={Link} to="/revolution" label="The Revolution"/>
-          <Tab className={classes.tab} component={Link} to="/about-us" label="About Us"/>
-          <Tab className={classes.tab} component={Link} to="/contact-us" label="Contact Us"/>
-        </Tabs>
+              {MainOptions.map((option)=>(
+                <Tab key={option.displayName} className={classes.tab} component={Link} to={option.link} label={option.displayName} aria-controls={option.ariaControls} aria-haspopup={option.ariaPopup} onMouseOver={option.mouseOver}/>
+              ))}
+
+              </Tabs>
         <Button variant="contained" color="secondary" component={Link} to="/estimate" className={classes.button} onClick={()=>setValue(5)}>
           Estimate
         </Button>
@@ -202,18 +214,41 @@ function Header(){
       </Menu>
     </Fragment>);
 
+    const drawer = (
+    <Fragment>
+      
+      <SwipeableDrawer classes={{paper: classes.drawerList}} disableBackdropTransition={!iOS} disableDiscovery={iOS} open={IsOpenDrawer} onOpen={()=>setIsOpenDrawer(true)} onClose={()=>setIsOpenDrawer(false)}>
+      <div className={classes.toolbarMargin} gutterBottom/>
+      <List disablePadding>
+        {MainOptions.map((option) => (
+    
+          <ListItem divider button key={option.displayName} selected={value===option.activeIndex} className={getClass(option.displayName,option.activeIndex)} component={Link} to={option.link} onClick={()=>{setIsOpenDrawer(false);setValue(option.activeIndex);}}>
+            <ListItemText className={classes.drawerListItem} primary={option.displayName} />
+          </ListItem>
+    ))}
+      </List>
+      
+      </SwipeableDrawer>
+      <IconButton className={classes.drawerContainer} onClick={()=>setIsOpenDrawer(!IsOpenDrawer)}>
+        <MenuIcon className={classes.drawerIcon} />
+      </IconButton>
+    </Fragment>)
+
+
 
     return (
     <React.Fragment>    
     <ElevationScroll>
-        <AppBar position="fixed">
+        <AppBar position="fixed" classes={classes.appbar}>
         <Toolbar disableGutters>
         <Button disableRipple component={Link} to="/" className={classes.logoContainer} onClick={()=>setValue(0)}>
         <img className={classes.logo} src={logo} alt="logo"/>
         </Button>
-        {matches ? null : tabs}
+        {matches ? drawer : tabs}
         </Toolbar>
+        
     </AppBar>
+        
      </ElevationScroll>
      <div className={classes.toolbarMargin}/> 
      
