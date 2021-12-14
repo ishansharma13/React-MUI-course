@@ -119,7 +119,7 @@ const styles = makeStyles(theme=>({
       opacity:1
     },
     appbar:{
-      zIndex: theme.zIndex.drawer+1
+      zIndex: theme.zIndex.modal+1
     }
 }))
 
@@ -188,6 +188,7 @@ function Header(){
     };
 
     const tabs = (<Fragment>
+              <Toolbar />
               <Tabs value={value} onChange={handleChange} className={classes.toolbarContainer}>
               {MainOptions.map((option)=>(
                 <Tab key={option.displayName} className={classes.tab} component={Link} to={option.link} label={option.displayName} aria-controls={option.ariaControls} aria-haspopup={option.ariaPopup} onMouseOver={option.mouseOver}/>
@@ -216,9 +217,9 @@ function Header(){
 
     const drawer = (
     <Fragment>
-      
+      <Toolbar />
       <SwipeableDrawer classes={{paper: classes.drawerList}} disableBackdropTransition={!iOS} disableDiscovery={iOS} open={IsOpenDrawer} onOpen={()=>setIsOpenDrawer(true)} onClose={()=>setIsOpenDrawer(false)}>
-      <div className={classes.toolbarMargin} gutterBottom/>
+      <div className={classes.toolbarMargin}/> 
       <List disablePadding>
         {MainOptions.map((option) => (
     
@@ -239,8 +240,8 @@ function Header(){
     return (
     <React.Fragment>    
     <ElevationScroll>
-        <AppBar position="fixed" classes={classes.appbar}>
-        <Toolbar disableGutters>
+        <AppBar position="fixed" className={classes.appbar}>
+        <Toolbar disableGutters >
         <Button disableRipple component={Link} to="/" className={classes.logoContainer} onClick={()=>setValue(0)}>
         <img className={classes.logo} src={logo} alt="logo"/>
         </Button>
@@ -248,7 +249,7 @@ function Header(){
         </Toolbar>
         
     </AppBar>
-        
+    
      </ElevationScroll>
      <div className={classes.toolbarMargin}/> 
      
