@@ -3,6 +3,9 @@ import {Link} from 'react-router-dom';
 import Grid from '@material-ui/core/Grid';
 import { makeStyles } from '@material-ui/core/styles';
 import Hidden from '@material-ui/core/Hidden';
+import facebook from "../../assets/facebook.svg";
+import twitter from "../../assets/twitter.svg";
+import instagram from "../../assets/instagram.svg";
 
 const useStyles = makeStyles((theme) => ({
     mainContainer:{
@@ -17,7 +20,23 @@ const useStyles = makeStyles((theme) => ({
     },
     gridItem:{
         margin:'3em'
-    }
+    },
+    icon: {
+        height: "4em",
+        width: "4em",
+        [theme.breakpoints.down("xs")]: {
+          height: "2.5em",
+          width: "2.5em"
+        }
+      },
+      socialContainer: {
+        position: "absolute",
+        marginTop: "-6em",
+        right: "1.5em",
+        [theme.breakpoints.down("xs")]: {
+          right: "0.6em"
+        }
+      }
   }));
 
 export default function GridLayout(props){
@@ -30,6 +49,7 @@ export default function GridLayout(props){
     }
     const classes = useStyles();
     return (
+        <React.Fragment>
         <Hidden mdDown>
         <Grid className={classes.mainContainer} justify="center" container direction="row" spacing={3}>
             <Grid item className={classes.gridItem}>
@@ -71,5 +91,7 @@ export default function GridLayout(props){
             </Grid>
         </Grid>
         </Hidden>
+        
+        </React.Fragment>
     );
 }
